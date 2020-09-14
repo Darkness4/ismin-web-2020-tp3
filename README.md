@@ -26,9 +26,9 @@ Copy the `BookService` of the previous TP and make all the functions asynchronou
   - `Promise<Book>` instead of `Book`
   - `Promise<Book[]>` instead of `Book[]`
   - `Promise<void>` instead of `void` 
-  
+
 The tests of the previous TP should still be passing as the goal of this step is to refactor the internal code of our API.     
- 
+
 ### Step 2: 🍃 MongoDB storage
 
 Start by adding mongoose related dependencies to the project.
