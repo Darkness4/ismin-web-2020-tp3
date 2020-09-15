@@ -6,10 +6,10 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class BookModel extends Document implements Book {
-  @Prop({ required: true })
+  @Prop({ required: true, index: 'text' })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: 'text' })
   author: string;
 
   @Prop({ required: true })

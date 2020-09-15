@@ -12,8 +12,7 @@ export class BookService {
   ) {}
 
   async addBook(createBookDto: CreateBookDto): Promise<Book> {
-    const createdBook = new this.bookModel(createBookDto);
-    return createdBook.save();
+    return this.bookModel.create(createBookDto);
   }
 
   async getBook(title: string): Promise<Book> {
@@ -58,20 +57,37 @@ export class BookService {
     return this.bookModel.findOneAndDelete({ title: title }).exec();
   }
 
-  async findByKeywords(keywords: string): Promise<Book[]> {
-    let keywordsList = keywords.toLowerCase().split(' ');
-    let result = (await this.bookModel.find().exec()).filter(book => {
-      if (keywords === null || keywords === '') {
-        return true;
-      }
-      return keywordsList.every(keyword => {
-        return (
-          (book.title ?? '').toLowerCase().includes(keyword) ||
-          (book.author ?? '').toLowerCase().includes(keyword)
-        );
-      });
-    });
+  async findByKeywords(term: string): Promise<Book[]> {
+    return this.bookModel
+      .find({
+        $or: [
+          { author: new RegExp(term, 'gi') },
+          { title: new RegExp(term, 'gi') },
+        ],
+      })
+      .exec();
+  }
 
-    return result;
+  async top5(): Promise<any[]> {
+    return this.bookModel
+      .aggregate([
+        {
+          $group: {
+            _id: '$author',
+            author: { $first: '$author' },
+            numberOfBooks: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { numberOfBooks: -1 },
+        },
+        {
+          $limit: 5,
+        },
+        {
+          $addFields: { topOrder: 1 },
+        },
+      ])
+      .exec();
   }
 }
