@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose/dist/common/mongoose.decorators';
 import { BookModel } from 'database/book.schema';
 import { CreateBookDto } from 'dtos/create-book.dto';
+import { Book } from 'models/book';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -10,12 +11,12 @@ export class BookService {
     @InjectModel(BookModel.name) private bookModel: Model<BookModel>,
   ) {}
 
-  async addBook(createBookDto: CreateBookDto): Promise<BookModel> {
+  async addBook(createBookDto: CreateBookDto): Promise<Book> {
     const createdBook = new this.bookModel(createBookDto);
     return createdBook.save();
   }
 
-  async getBook(title: string): Promise<BookModel> {
+  async getBook(title: string): Promise<Book> {
     return this.bookModel.findOne({ title: title }).exec();
   }
 
@@ -23,7 +24,7 @@ export class BookService {
     author: string,
     start: number,
     limit: number,
-  ): Promise<BookModel[]> {
+  ): Promise<Book[]> {
     return this.bookModel
       .find()
       .where('author')
@@ -33,7 +34,7 @@ export class BookService {
       .exec();
   }
 
-  async getAllBooks(start: number, limit: number): Promise<BookModel[]> {
+  async getAllBooks(start: number, limit: number): Promise<Book[]> {
     return this.bookModel
       .find()
       .skip(start)
@@ -45,7 +46,7 @@ export class BookService {
     return this.bookModel.estimatedDocumentCount();
   }
 
-  async getBooksPublishedBefore(date: Date): Promise<BookModel[]> {
+  async getBooksPublishedBefore(date: Date): Promise<Book[]> {
     return this.bookModel
       .find()
       .where('date')
@@ -53,11 +54,11 @@ export class BookService {
       .exec();
   }
 
-  async delete(name: string): Promise<BookModel> {
-    return this.bookModel.findOneAndDelete({ name: name }).exec();
+  async delete(title: string): Promise<Book> {
+    return this.bookModel.findOneAndDelete({ title: title }).exec();
   }
 
-  async findByKeywords(keywords: string): Promise<BookModel[]> {
+  async findByKeywords(keywords: string): Promise<Book[]> {
     let keywordsList = keywords.toLowerCase().split(' ');
     let result = (await this.bookModel.find().exec()).filter(book => {
       if (keywords === null || keywords === '') {

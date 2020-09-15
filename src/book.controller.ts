@@ -4,13 +4,15 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
   Req,
 } from '@nestjs/common';
 import { CreateBookDto } from 'dtos/create-book.dto';
-import { Links, PaginatedBooksDto } from 'dtos/paginated-books.dto';
+import { Links, PaginatedDto } from 'dtos/paginated-books.dto';
 import { SearchBookDto } from 'dtos/search-book.dto';
 import { Book } from 'models/book';
 import { BookService } from './book.service';
@@ -37,10 +39,16 @@ export class BookController {
     @Body() searchBookDto: SearchBookDto,
     @Query('limit') limit: string = '5',
     @Query('start') start: string = '0',
-  ): Promise<PaginatedBooksDto> {
-    let response = new PaginatedBooksDto();
+  ): Promise<PaginatedDto<Book>> {
+    let response = new PaginatedDto<Book>();
     let limitInt = parseInt(limit);
     let startInt = parseInt(start);
+
+    if (startInt < 0) {
+      throw new HttpException('start should be > 0', HttpStatus.BAD_REQUEST);
+    } else if (limitInt < 0) {
+      throw new HttpException('limit should be > 0', HttpStatus.BAD_REQUEST);
+    }
 
     response.results = (
       await this.bookService.findByKeywords(searchBookDto.term)
@@ -65,10 +73,17 @@ export class BookController {
     @Query('author') author: string,
     @Query('limit') limit: string = '5',
     @Query('start') start: string = '0',
-  ): Promise<PaginatedBooksDto> {
-    let response = new PaginatedBooksDto();
+  ): Promise<PaginatedDto<Book>> {
+    let response = new PaginatedDto<Book>();
     let limitInt = parseInt(limit);
     let startInt = parseInt(start);
+
+    if (startInt < 0) {
+      throw new HttpException('start should be > 0', HttpStatus.BAD_REQUEST);
+    } else if (limitInt < 0) {
+      throw new HttpException('limit should be > 0', HttpStatus.BAD_REQUEST);
+    }
+
     if (author) {
       response.results = await this.bookService.getBooksOf(
         author,
@@ -93,7 +108,7 @@ export class BookController {
   }
 
   @Delete(':title')
-  delete(@Param('title') title: string): void {
-    this.bookService.delete(title);
+  delete(@Param('title') title: string): Promise<Book> {
+    return this.bookService.delete(title);
   }
 }

@@ -1,9 +1,9 @@
 import { Book } from 'models/book';
 
-export class PaginatedBooksDto {
+export class PaginatedDto<T = any> {
   _links: Links;
   limit: number;
-  results: Book[];
+  results: T[];
   size: number;
   start: number;
 }
