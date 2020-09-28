@@ -7,7 +7,7 @@ import { BookService } from './book.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost'),
+    MongooseModule.forRoot('mongodb://uht3sohis1mldn19adwf:IPX5vK92lnO71nHeJriF@bqxuj1qtyo7iqvb-mongodb.services.clever-cloud.com:27017/bqxuj1qtyo7iqvb'),
     MongooseModule.forFeature([{ name: BookModel.name, schema: BookSchema }]),
   ],
   controllers: [BookController, AuthorController],

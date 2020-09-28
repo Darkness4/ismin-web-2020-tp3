@@ -4,7 +4,7 @@ import { SchemaFactory } from '@nestjs/mongoose/dist/factories/schema.factory';
 import { Book } from 'models/book';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ collection: 'books-marc-nguyen' })
 export class BookModel extends Document implements Book {
   @Prop({ required: true, index: 'text' })
   title: string;
