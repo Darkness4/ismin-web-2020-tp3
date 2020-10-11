@@ -111,4 +111,9 @@ export class BookController {
   delete(@Param('title') title: string): Promise<Book> {
     return this.bookService.delete(title);
   }
+
+  @Delete()
+  clear() {
+    return this.bookService.clear();
+  }
 }

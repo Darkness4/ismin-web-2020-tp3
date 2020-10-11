@@ -57,6 +57,10 @@ export class BookService {
     return this.bookModel.findOneAndDelete({ title: title }).exec();
   }
 
+  async clear() {
+    return this.bookModel.remove({}).exec();
+  }
+
   async findByKeywords(term: string): Promise<Book[]> {
     return this.bookModel
       .find({
