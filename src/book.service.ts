@@ -58,7 +58,7 @@ export class BookService {
   }
 
   async clear() {
-    return this.bookModel.remove({}).exec();
+    return this.bookModel.deleteMany({}).exec();
   }
 
   async findByKeywords(term: string): Promise<Book[]> {
